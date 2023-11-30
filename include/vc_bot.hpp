@@ -1,3 +1,14 @@
+/**
+ * @file vc_bot.hpp
+ * @author  Kiran S Patil (kpatil27@umd.edu)
+ * @brief 
+ * @version 0.1
+ * @date 2023-11-29
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+#pragma once
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -24,13 +35,13 @@ class WalkerBot : public rclcpp::Node {
   WalkerBot() : Node("vc_bot"), state(StateType::STOP) {
     publisher_ = this->create_publisher<TwistMsg>("cmd_vel", 10);
     subscriber_ = this->create_subscription<LaserScanMsg>(
-        "/scan", rclcpp::QoS(rclcpp::SensorDataQoS()), 
+        "/scan", rclcpp::QoS(rclcpp::SensorDataQoS()),
         std::bind(&WalkerBot::subscribeCallback, this, _1));
-    timer_ = this->create_wall_timer(100ms, std::bind(&WalkerBot::timerCallback, this));
+    timer_ = this->create_wall_timer(100ms,
+            std::bind(&WalkerBot::timerCallback, this));
   }
 
  private:
-
   void subscribeCallback(const LaserScanMsg& msg);
 
   void timerCallback();
