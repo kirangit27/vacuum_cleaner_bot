@@ -12,7 +12,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'all_topics',
-            default_value='False'
+            default_value='true'
         ),
 
         Node(

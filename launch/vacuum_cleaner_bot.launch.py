@@ -52,10 +52,17 @@ def generate_launch_description():
         }.items()
     )
 
+    rosbag = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(launch_file_dir_local, 'ros_bag.launch.py')
+        )
+    )
+
     ld = LaunchDescription()
 
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
+    ld.add_action(rosbag)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
 
