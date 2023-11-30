@@ -22,18 +22,11 @@ enum class StateType {
 class WalkerBot : public rclcpp::Node {
  public:
   WalkerBot() : Node("vc_bot"), state(StateType::STOP) {
-    auto cmdVelTopicName = "cmd_vel";
-    publisher_ = this->create_publisher<TwistMsg>(cmdVelTopicName, 10);
-
-    auto defaultQoS = rclcpp::QoS(rclcpp::SensorDataQoS());
-
-    auto laserScanTopicName = "/scan";
-    auto subCallback = std::bind(&WalkerBot::subscribeCallback, this, _1);
+    publisher_ = this->create_publisher<TwistMsg>("cmd_vel", 10);
     subscriber_ = this->create_subscription<LaserScanMsg>(
-        laserScanTopicName, defaultQoS, subCallback);
-
-    auto timerCallback = std::bind(&WalkerBot::timerCallback, this);
-    timer_ = this->create_wall_timer(100ms, timerCallback);
+        "/scan", rclcpp::QoS(rclcpp::SensorDataQoS()), 
+        std::bind(&WalkerBot::subscribeCallback, this, _1));
+    timer_ = this->create_wall_timer(100ms, std::bind(&WalkerBot::timerCallback, this));
   }
 
  private:
