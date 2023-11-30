@@ -13,7 +13,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(turtlebot3_gazebo REQUIRED)
 
 # Adding an executable for code to avoid obstacles
-add_executable(vc_bot src/vc_bot.cpp)
+add_executable(vc_bot src/vc_bot.cpp src/main.cpp)
 ament_target_dependencies(vc_bot rclcpp sensor_msgs geometry_msgs)
 
 install(TARGETS
