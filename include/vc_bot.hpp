@@ -1,14 +1,16 @@
 /**
  * @file vc_bot.hpp
  * @author  Kiran S Patil (kpatil27@umd.edu)
- * @brief 
+ * @brief   Header file for the WalkerBot class.
  * @version 0.1
  * @date 2023-11-29
  * 
  * @copyright Copyright (c) 2023
  * 
  */
+
 #pragma once
+
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -24,35 +26,48 @@ using TwistMsg = geometry_msgs::msg::Twist;
 
 using namespace std::chrono_literals;
 
+/**
+ * @brief Enum representing different states of the WalkerBot.
+ */
 enum class StateType {
-  MOVE = 0,
-  STOP,
-  ROTATE,
+  MOVE = 0, /**< Move state */
+  STOP,     /**< Stop state */
+  ROTATE    /**< Rotate state */
 };
 
+/**
+ * @brief WalkerBot class represents a simple robot that can navigate avoiding obstacles.
+ */
 class WalkerBot : public rclcpp::Node {
  public:
-  WalkerBot() : Node("vc_bot"), state(StateType::STOP) {
-    publisher_ = this->create_publisher<TwistMsg>("cmd_vel", 10);
-    subscriber_ = this->create_subscription<LaserScanMsg>(
-        "/scan", rclcpp::QoS(rclcpp::SensorDataQoS()),
-        std::bind(&WalkerBot::subscribeCallback, this, _1));
-    timer_ = this->create_wall_timer(100ms,
-            std::bind(&WalkerBot::timerCallback, this));
-  }
+  /**
+   * @brief Constructor for the WalkerBot class.
+   */
+  WalkerBot();
 
  private:
+  /**
+   * @brief Callback function for the laser scan subscriber.
+   * @param msg The laser scan message received from the sensor.
+   */
   void subscribeCallback(const LaserScanMsg& msg);
 
+  /**
+   * @brief Timer callback function, called periodically to control the robot's behavior.
+   */
   void timerCallback();
 
+  /**
+   * @brief Detects if there is an obstacle based on the current laser scan data.
+   * @return True if an obstacle is detected, false otherwise.
+   */
   bool detectObstacle();
 
-  rclcpp::Subscription<LaserScanMsg>::SharedPtr subscriber_;
-  rclcpp::Publisher<TwistMsg>::SharedPtr publisher_;
-  rclcpp::TimerBase::SharedPtr timer_;
-  LaserScanMsg currentScan;
-  StateType state;
+  rclcpp::Subscription<LaserScanMsg>::SharedPtr subscriber_; /**< Laser scan subscriber */
+  rclcpp::Publisher<TwistMsg>::SharedPtr publisher_;         /**< Twist message publisher */
+  rclcpp::TimerBase::SharedPtr timer_;                        /**< Timer for periodic tasks */
+  LaserScanMsg currentScan;                                    /**< Current laser scan data */
+  StateType state;                                             /**< Current state of the robot */
 };
 
 
